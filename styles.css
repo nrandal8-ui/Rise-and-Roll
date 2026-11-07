@@ -1,109 +1,170 @@
 /* =========================================================
-   Rise and Roll — styles.css
+   Rise and Roll — styles.css (Module 3: responsive layout system)
    One stylesheet, organized into cascade layers.
    Later layers win over earlier ones regardless of
    selector specificity, so no !important or ID battles.
+
+   Breakpoints are in em so they respond to text zoom too:
+     37.5em (600px at default text size)  — nav row, media split, timeline 2x2
+     64em   (1024px at default text size) — timeline 4 across, larger sections
+   Each one has its content-based reason written beside it.
    ========================================================= */
-   @layer reset, base, layout, components, utilities, states, overrides, print;
 
-   /* RESET: global reset of margins, paddings, and box-sizing */
+@layer reset, base, layout, components, utilities, states, overrides, print;
 
-   @layer reset{
-    *, *::before, *::after {
-      box-sizing: border-box;
-   }
-    body, h1, h2, h3, h4, p, ul, ol, figure {
+
+/* ---------------------------------------------------------
+   RESET: neutralize browser defaults
+   --------------------------------------------------------- */
+@layer reset {
+
+  /* Padding and borders fit inside the size I set */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Remove default margins; spacing comes from tokens */
+  body, h1, h2, h3, h4, p, ul, ol, figure {
     margin: 0;
   }
-   
+
+  /* Images never overflow and keep their proportions */
   img,
   picture {
     display: block;
-    max-width: 100%;
-    height: auto;
+    max-inline-size: 100%;
+    block-size: auto;
   }
 
+  /* Lists used for layout lose bullets; role="list" keeps
+     them announced as lists by screen readers */
   ul[role="list"],
   ol[role="list"] {
     list-style: none;
     padding: 0;
   }
 
-   button, input, textarea {
+  /* Controls use the page font instead of the system font */
+  button, input, textarea {
     font: inherit;
   }
- 
+
 }
 
-/*  BASE: global styles for typography, links, and images */
 
-   @layer base{
+/* ---------------------------------------------------------
+   BASE: design tokens + bare-element styles
+   Only :root and element selectors here, no classes.
+   --------------------------------------------------------- */
+@layer base {
 
-   :root {
-     /* Color */
-        --color-primary: #3c4a84;
-        --color-primary-dark: #2e3a6b;
-        --color-accent: #0e7c7b;
-        --color-accent-dark: #0a5f5e;
-        --color-text: #1b1b1b;
-        --color-text-muted: #4a4a4a;
-        --color-bg: #ffffff;
-        --color-bg-alt: #f7f7f7;
-        --color-surface: #ffffff;
-        --color-border: #d9d9d9;
-        --color-on-dark: #ffffff;
-        --color-focus: #e8a33d;
+  :root {
+    /* Color */
+    --color-primary: #3C4A84;        /* navy: headings, links, primary buttons (8.4:1 on white) */
+    --color-primary-dark: #2E3A6B;   /* hover/active for primary */
+    --color-accent: #0E7C7B;         /* teal: CTA buttons (about 5:1 with white text) */
+    --color-accent-dark: #0A5F5E;    /* hover/active for accent */
+    --color-text: #1B1B1B;           /* body text */
+    --color-text-muted: #4A4A4A;     /* secondary text, still passes 4.5:1 */
+    --color-bg: #FFFFFF;             /* page background */
+    --color-bg-alt: #F7F7F7;         /* alternating section background */
+    --color-surface: #FFFFFF;        /* cards */
+    --color-border: #D9D9D9;         /* card and divider borders */
+    --color-on-dark: #FFFFFF;        /* text on navy/teal */
 
-        /* Typography */
-        --font-heading: "fredoka", "Arial Rounded MT Bold", sans-serif;
-        --font-body: "poppins", Arial, sans-serif;
-        --text-sm: 0.875rem; /* 14px */
-        --text-base: 1rem; /* 16px */
-        --text-md: 1.25rem; /* 20px */
-        --text-lg: 1.5rem; /* 24px */
-        --text-xl: 2rem; /* 32px */
-        --text-xxl: clamp(2rem, 5vw, 2.75rem); /* h1: scales from 32px to 44px */
+    /* Typography */
+    --font-heading: "Fredoka", "Arial Rounded MT Bold", sans-serif;
+    --font-body: "Poppins", Arial, sans-serif;
 
-        --leading-tight: 1.2; /* headings */
-        --leading-body: 1.5; /* body text */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-md: 1.25rem;    /* 20px */
+    --text-lg: 1.5rem;     /* 24px */
+    --text-xl: 2rem;       /* 32px */
+    --text-xxl: clamp(2rem, 5vw, 2.75rem); /* h1: scales from 32px to 44px */
 
-          /* Spacing (4/8px scale) */
-          --space-xs: 0.25rem; /* 4px */
-          --space-sm: 0.5rem; /* 8px */
-          --space-md: 1rem; /* 16px */
-          --space-lg: 1.5rem; /* 24px */
-          --space-xl: 2rem; /* 32px */
-          --space-xxl: 3rem; /* 48px */
+    --leading-tight: 1.2;  /* headings */
+    --leading-body: 1.5;   /* paragraphs */
 
-        /* Shape */
-        --radius: 8px;
-        --border-width: 1px;
-        
-        /* Focus */ 
-        --focus-width: 3px;
-        --focus-offset: 3px;
-        --focus-color: var(--color-focus);
+    /* Spacing (4/8px scale) */
+    --space-xs: 0.25rem;   /* 4px */
+    --space-sm: 0.5rem;    /* 8px */
+    --space-md: 1rem;      /* 16px: card gaps */
+    --space-lg: 1.5rem;    /* 24px */
+    --space-xl: 2rem;      /* 32px */
+    --space-xxl: 3rem;     /* 48px */
 
-        /* Layout */
-        --container-max: 1120px;
-        --measure: 65ch; /* optimal line length for body text */
+    /* Fluid spacing: grows with the viewport, never past its limits.
+       Replaces the old fixed values that needed media queries. */
+    --gutter: clamp(1rem, 4vw, 2rem);         /* side padding: 16px to 32px */
+    --section-space: clamp(3rem, 6vw, 4.5rem); /* section padding: 48px to 72px */
 
+    /* Shape */
+    --radius: 8px;
+    --border-width: 1px;
 
-   }
-}
+    /* Focus */
+    --focus-width: 3px;
+    --focus-offset: 3px;
+    --focus-color: #E8A33D;  /* amber: visible on white, gray, navy, and teal */
 
-/* LAYOUT: */ 
-@layer layout {
-  /* Centered content column with side padding */
-  .container {
-    width: 100%;
-    max-width: var(--container-max);
-    margin-inline: auto;
-    padding-inline: var(--space-md);
+    /* Layout */
+    --container-max: 70rem;  
+    --measure: 65ch;
+    /* max line length for text */
   }
 
+  body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-body);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    color: var(--color-primary);
+  }
+
+  h1 { font-size: var(--text-xxl); }
+  h2 { font-size: var(--text-xl); }
+  h3 { font-size: var(--text-md); }
+
+  p {
+    max-inline-size: var(--measure);
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   LAYOUT: page structure patterns
+   --------------------------------------------------------- */
+@layer layout {
+
+  /* Centered content column. Fluid gutter means no media query
+     is needed for side padding. */
+  .container {
+    inline-size: 100%;
+    max-inline-size: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Fluid vertical rhythm for every page section */
   .section {
-    padding-block: var(--space-xxl);
+    padding-block: var(--section-space);
   }
 
   .section--alt {
@@ -118,68 +179,94 @@
     align-items: center;
   }
 
-  /* One grid for every card group; modifiers set column counts.
-     Narrow: always 1 column. */
-    .grid {
+  /* Base grid: one column. Modifiers set the column behavior. */
+  .grid {
     display: grid;
     gap: var(--space-md);
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  /* Text beside an image (hero, showcase); stacks on narrow,
-     image first so it appears above the headline */
-     .media {
-      display: grid;
-      gap: var(--space-xl);
-      align-items: center;
-     }
+  /* INTRINSIC GRID 1: "How it works" steps.
+     auto-fit places as many columns as fit, each at least 15rem.
+     15rem keeps the longest title, "They show what they learned,"
+     to two lines. min() prevents overflow on very small screens.
+     No media query needed: 1 column on phones, 3 on wide screens.
+     Known tradeoff: between about 560px and 815px the steps sit
+     2 + 1, with the third card alone on a second row. I accepted
+     this because each step stands alone and stays readable, and
+     subgrid keeps the first row's titles and text aligned. */
+  .grid--3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
 
-     .media__img {
-      order: -1;
-      width: 100%;
-      border-radius: var(--radius);
-     }
+  /* Timeline and hosting requirements: 4 items in a fixed order.
+     I kept explicit column counts here instead of auto-fit because
+     auto-fit would produce a 3 + 1 split at in-between widths,
+     which breaks the week-by-week sequence. 2x2 or 4 across keeps
+     the order readable. */
+  @media (min-width: 37.5em) {
+    /* Content reason: two cards need about 15rem each for a heading
+       plus a two-line description; that fits from about 37.5em. */
+    .grid--4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 
-      /* Medium: 600px+ */
-      @media (min-width: 600px) {
-        .container {
-          padding-inline: var(--space-xl);
-        }
-      
-      .grid--3 { grid-template-columns: repeat(3, 1fr); }
-      .grid--4 { grid-template-columns: repeat(2, 1fr); }
- 
-     .media {
-      grid-template-columns: 1fr 1fr;
-    } 
+  @media (min-width: 64em) {
+    /* Content reason: four across needs about 14rem per card so
+       descriptions stay at two lines; below 64em four columns
+       would be about 9rem wide and wrap to five lines. */
+    .grid--4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* Media block (hero, showcase): stacked on narrow, image first */
+  .media {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  .media__img {
+    order: -1;
+    inline-size: 100%;
+    border-radius: var(--radius);
+  }
+
+  @media (min-width: 37.5em) {
+    /* Content reason: side by side needs each column to be at least
+       about 17rem so the hero h1 stays at three lines and both
+       buttons fit. Below 37.5em the text column gets too narrow,
+       so the image stacks above the text. */
+    .media {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
     .media__img {
       order: 0;  /* image moves to the right */
     }
-  }  
-
-  /* Wide: 1024px+ */
-  @media (min-width: 1024px) {
-    .section {
-      padding-block: calc(var(--space-xxl) * 1.5);
-    }
-
-    .grid--4 { grid-template-columns: repeat(4, 1fr); }
   }
 
 }
 
-/* COMPONENTS: */ 
+
+/* ---------------------------------------------------------
+   COMPONENTS: named, reusable UI pieces
+   Component-scoped custom properties are set on the
+   component and can be changed by a parent (see .cta-band).
+   --------------------------------------------------------- */
 @layer components {
+
   /* Site header + navigation */
   .site-header {
+    border-block-end: var(--border-width) solid var(--color-border);
     background-color: var(--color-bg);
-    border-bottom: var(--border-width) solid var(--color-border);
   }
 
   .site-header__inner {
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     gap: var(--space-sm);
     padding-block: var(--space-md);
   }
@@ -204,7 +291,10 @@
     font-weight: 600;
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: 37.5em) {
+    /* Content reason: the logo plus five links ("For Partners" and
+       "Get Involved" are the longest) need about 35rem to sit in
+       one row. Below that the links crowd, so they stack. */
     .site-header__inner {
       flex-direction: row;
       justify-content: space-between;
@@ -212,126 +302,177 @@
     }
   }
 
-  /* Button: */
-.button {
-  --button-bg: var(--color-primary);
-  --button-fg: var(--color-on-dark);
-  --button-border: var(--color-primary);
+  /* Button: variants change component-scoped tokens only */
+  .button {
+    --button-bg: var(--color-primary);
+    --button-fg: var(--color-on-dark);
+    --button-border: var(--color-primary);
 
-  display: inline-block;
-  padding: var(--space-sm) var(--space-lg);
-  border: 2px solid var(--button-border);
-  border-radius: var(--radius);
-  background-color: var(--button-bg);
-  color: var(--button-fg);
-  text-decoration: none;
-  font-weight: 600;
-  text-align: center;
-  transition: background-color 0.2s, color 0.2s;
+    display: inline-block;
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-lg);
+    border: 2px solid var(--button-border);
+    border-radius: var(--radius);
+    background-color: var(--button-bg);
+    color: var(--button-fg);
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .button--accent {
+    --button-bg: var(--color-accent);
+    --button-border: var(--color-accent);
+  }
+
+  .button--secondary {
+    --button-bg: transparent;
+    --button-fg: var(--color-primary);
+    --button-border: var(--color-primary);
+  }
+
+  /* Card: one pattern for steps, timeline, requirements, roles.
+     The card is a query container named "card". */
+  .card {
+    --card-padding: var(--space-lg);
+
+    container: card / inline-size;
+    padding: var(--card-padding);
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  /* Default (narrow) layout: title stacked above text. This is
+     also the fallback for browsers without container queries. */
+  .card__title {
+    margin-block-end: var(--space-sm);
+  }
+
+  /* CONTAINER QUERY: once a card has 28rem of room, the title
+     moves to a left column beside the text.
+     INTRINSIC GRID 2: fit-content(10rem) sizes the title column
+     to the label's own width ("Weeks 1–2" is about 6rem), capped
+     at 10rem so a long title can't squeeze the description. */
+  @container card (min-width: 28rem) {
+    .card__inner {
+      display: grid;
+      grid-template-columns: fit-content(10rem) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: baseline;
+    }
+
+    .card__inner .card__title {
+      margin-block-end: 0;
+    }
+  }
+
+  /* SUBGRID + FEATURE QUERY: in "How it works," titles wrap to
+     different line counts, so descriptions start at different
+     heights. Subgrid lets each card share its parent grid's rows,
+     lining up every title and description across the row.
+     Fallback: browsers without subgrid skip this block and show
+     normal cards, which are uneven but fully readable. */
+  @supports (grid-template-rows: subgrid) {
+    .grid--3 > .card {
+      /* A query container gets layout containment, which turns a
+         subgrid back into an independent grid. Step cards never use
+         the side-by-side layout, so they opt out of being containers. */
+      container-type: normal;
+      display: grid;
+      grid-row: span 2;
+      grid-template-rows: subgrid;
+      row-gap: var(--space-sm);
+    }
+
+    .grid--3 > .card .card__title {
+      margin-block-end: 0;
+    }
+  }
+
+  /* CTA band: navy background; flips the secondary button
+     to white by changing its tokens, not by overriding it */
+  .cta-band {
+    padding-block: var(--section-space);
+    background-color: var(--color-primary);
+    color: var(--color-on-dark);
+    text-align: center;
+  }
+
+  .cta-band .cluster {
+    justify-content: center;
+  }
+
+  .cta-band__title {
+    margin-block-end: var(--space-lg);
+    color: var(--color-on-dark);
+  }
+
+  .cta-band .button--secondary {
+    --button-fg: var(--color-on-dark);
+    --button-border: var(--color-on-dark);
+  }
+
+  /* FAQ accordion (For Partners) */
+  .faq {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+    background-color: var(--color-surface);
+  }
+
+  .faq + .faq {
+    margin-block-start: var(--space-sm);
+  }
+
+  .faq__question {
+    padding: var(--space-md);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .faq__answer {
+    padding-inline: var(--space-md);
+    padding-block-end: var(--space-md);
+  }
+
+  /* Site footer */
+  .site-footer {
+    padding-block: var(--space-xl);
+    background-color: var(--color-text);
+    color: var(--color-on-dark);
+    font-size: var(--text-sm);
+  }
+
+  .site-footer a {
+    color: var(--color-on-dark);
+  }
+
 }
 
-.button--accent {
-  --button-bg: var(--color-accent);
-  --button-border: var(--color-accent);
-}
 
-.button--secondary {
-  --button-bg: transparent;
-  --button-fg: var(--color-primary);
-  --button-border: var(--color-primary);
-}
-
-/* Card: */
-
-.card {
-  --card-padding: var(--space-lg);
-
-  padding: var(--card-padding);
-  background-color: var(--color-surface);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-}
-
-.card__title {
-  margin-bottom: var(--space-sm);
-}
-
-/* CTA: */
-.cta-band {
-  background-color: var(--color-primary);
-  color: var(--color-on-dark);
-  text-align: center;
-  padding-block: var(--space-xxl);
-}
-
-.cta-band .cluster {
-  justify-content: center;
- }
-
-.cta-band__title {
-  margin-bottom: var(--space-lg);
- color: var(--color-on-dark);
- }
-
- .cta-band .button--secondary {
-  --button-fg: var(--color-on-dark);
-  --button-border: var(--color-on-dark);
- }
-
- /* FAQ accordion (For Partners) */
- 
- .faq {
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-  background-color: var(--color-surface);
- }
-
- .faq + .faq {
-  margin-top: var(--space-sm);
- }
-
- .faq__question {
-  font-weight: 600;
-  padding: var(--space-md);
-  cursor: pointer;
- }
-
- .faq__answer {
-  padding: 0 var(--space-md) var(--space-md);
- }
-
- /* Site footer */
- .site-footer {
-  background-color: var(--color-text);
-  font-size: var(--text-sm);
-  color: var(--color-on-dark);
-  padding-block: var(--space-xl);
- }
-
- .site-footer a {
-  color: var(--color-on-dark);
- }
-}
-
-/* UTILITIES: */ 
+/* ---------------------------------------------------------
+   UTILITIES: single-purpose helpers
+   --------------------------------------------------------- */
 @layer utilities {
+
   /* Hidden visually, still read by screen readers */
   .visually-hidden {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    inline-size: 1px;
+    block-size: 1px;
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
   }
 
-
-/* Skip link: off-screen until focused (see states layer) */
- .skip-link {
+  /* Skip link: off-screen until focused (see states layer) */
+  .skip-link {
     position: absolute;
-    left: var(--space-md);
-    top: -100px;
-    padding: var(--space-sm) var(--space-md);
+    inset-inline-start: var(--space-md);
+    inset-block-start: -100px;
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-md);
     background-color: var(--color-primary);
     color: var(--color-on-dark);
     z-index: 10;
@@ -339,62 +480,65 @@
 
   /* Even vertical spacing between stacked children */
   .flow > * + * {
-    margin-top: var(--space-md);
+    margin-block-start: var(--space-md);
   }
- 
+
   .text-center {
     text-align: center;
   }
- 
+
 }
 
-/* STATES: */ 
+
+/* ---------------------------------------------------------
+   STATES: interaction, status, and user-preference styles
+   --------------------------------------------------------- */
 @layer states {
-  /* HOVER */
+
   /* Hover */
   a:hover {
     color: var(--color-primary-dark);
   }
- 
+
   .button:hover {
     --button-bg: var(--color-primary-dark);
     --button-border: var(--color-primary-dark);
     color: var(--button-fg);
   }
- 
+
   .button--accent:hover {
     --button-bg: var(--color-accent-dark);
     --button-border: var(--color-accent-dark);
   }
- 
+
   .button--secondary:hover {
     --button-bg: var(--color-primary);
     --button-fg: var(--color-on-dark);
   }
- 
+
   .cta-band .button--secondary:hover {
     --button-bg: var(--color-on-dark);
     --button-fg: var(--color-primary);
   }
- 
+
   /* Active: slight press */
   .button:active {
     transform: translateY(1px);
   }
 
-   /* Focus-visible: amber outline on every interactive element */
+  /* Focus-visible: amber outline on every interactive element */
   a:focus-visible,
   button:focus-visible,
   summary:focus-visible {
     outline: var(--focus-width) solid var(--focus-color);
     outline-offset: var(--focus-offset);
   }
- 
+
   .skip-link:focus {
-    top: var(--space-md);
+    inset-block-start: var(--space-md);
   }
 
-  /* Current page */
+  /* Current page: underline + navy, not color alone */
   .nav__link[aria-current="page"] {
     color: var(--color-primary);
     text-decoration: underline;
@@ -406,17 +550,17 @@
   .faq[open] {
     border-color: var(--color-primary);
   }
- 
+
   .faq[open] .faq__question {
     color: var(--color-primary);
   }
 
-  /* Missing images */
+  /* Missing image: background keeps the layout from collapsing */
   .media__img {
     background-color: var(--color-bg-alt);
   }
 
-  /* Reduced motion: turn off transitions and movement */
+  /* PREFERENCE 1: reduced motion turns off transitions and movement */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -425,24 +569,50 @@
       transform: none !important;
     }
   }
+
+  /* PREFERENCE 2: higher contrast. Light gray borders (#D9D9D9)
+     nearly disappear for low-vision users, so card, FAQ, and
+     header borders darken and grow, muted text becomes full
+     strength, and nav links get underlines so they don't rely
+     on weight alone. Changing tokens updates every component. */
+  @media (prefers-contrast: more) {
+    :root {
+      --color-border: #595959;
+      --color-text-muted: var(--color-text);
+      --border-width: 2px;
+    }
+
+    .nav__link {
+      text-decoration: underline;
+    }
+  }
+
 }
 
-/* OVERRIDES: */ 
+
+/* ---------------------------------------------------------
+   OVERRIDES: rare, documented one-off exceptions.
+   Intentionally empty. Any rule added here must have a
+   comment explaining why it couldn't live in another layer.
+   --------------------------------------------------------- */
 @layer overrides {
-
 }
 
-/* PRINT: */ 
+
+/* ---------------------------------------------------------
+   PRINT: For Partners prints cleanly for program directors
+   --------------------------------------------------------- */
 @layer print {
-@media print {  
-   /* Hide screen-only pieces */
-   .site-header nav,
+  @media print {
+
+    /* Hide screen-only pieces */
+    .site-header nav,
     .skip-link,
     .cta-band,
     .media__img {
       display: none;
     }
- 
+
     /* Black on white, no backgrounds, saves ink */
     body,
     .section--alt,
@@ -452,61 +622,50 @@
       background: none;
       color: #000;
     }
- 
+
     h1, h2, h3, a, .site-footer a {
       color: #000;
     }
- 
+
     /* Buttons print as outlined text, not ink-heavy blocks */
     .button {
       --button-bg: transparent;
       --button-fg: #000;
       --button-border: #000;
     }
- 
+
     /* Print the URL after external links */
     a[href^="http"]::after,
     a[href^="mailto"]::after {
       content: " (" attr(href) ")";
       font-size: 0.85em;
     }
- 
+
     /* Show closed FAQ answers when printed (newer browsers;
        older ones print only the questions you've opened) */
     .faq::details-content {
       content-visibility: visible;
       display: block;
     }
- 
+
     /* Keep cards and FAQ items whole on a page */
     .card,
     .faq {
       break-inside: avoid;
     }
- 
+
     /* Grids become a single readable column */
     .grid {
       display: block;
     }
- 
+
     .grid > * + * {
-      margin-top: var(--space-sm);
+      margin-block-start: var(--space-sm);
     }
- 
+
     .section {
       padding-block: var(--space-md);
     }
- 
+
   }
 }
-
-
-
-
-
-   
-
-
-
-        
-   
