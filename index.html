@@ -6,13 +6,14 @@
   <title>Rise and Roll | Skating + STEM After-School Enrichment</title>
   <meta name="description" content="Rise and Roll brings a 6–8 week skating and STEM cohort to your after-school program, ending in a student showcase.">
 
-  <!-- Fonts -->
+  <!-- Fonts: Fredoka 600 (headings) + Poppins 400/600 (body). Unused Fredoka 500 removed. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
-</head><body>
+</head>
+<body>
 
   <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -45,6 +46,10 @@
             <a class="button button--secondary" href="get-involved.html">Volunteer</a>
           </div>
         </div>
+        <!-- Responsive image: three WebP widths. sizes = display width:
+             about half the container (max 32rem) once the media block
+             splits at 37.5em, otherwise the full screen minus the gutters.
+             Above the fold, so it loads eagerly with high priority. -->
         <img class="media__img"
           src="images/hero-800.webp"
           srcset="images/hero-480.webp 480w,
@@ -58,7 +63,7 @@
     </section>
 
     <!-- A · HOW IT WORKS (grid: 1 col narrow, 3 at medium+) -->
-     <section class="section section--alt" aria-labelledby="how-heading">
+    <section class="section section--alt" aria-labelledby="how-heading">
       <div class="container flow">
         <h2 id="how-heading">How it works</h2>
         <ol class="grid grid--3" role="list">
@@ -89,17 +94,10 @@
       <div class="container flow">
         <h2 id="cohort-heading">A sample cohort</h2>
         <ol class="grid grid--4" role="list">
-<<<<<<< HEAD
-          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 1–2</h3><p>Balance, safety, and STEM foundations.</p></li>
-          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 3–4</h3><p>Glides and stops; forces and motion.</p></li>
-          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 5–6</h3><p>Turns and rhythm; design a project.</p></li>
-          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 7–8</h3><p>Rehearse and present at the showcase.</p></li>
-=======
-          <li class="card"><div class="card_inner"><h3 class="card__title">Weeks 1–2</h3><p>Balance, safety, and STEM foundations.</p></div></li>
-          <li class="card"><div class="card_inner"><h3 class="card__title">Weeks 3–4</h3><p>Glides and stops; forces and motion.</p></div></li>
-          <li class="card"><div class="card_inner"><h3 class="card__title">Weeks 5–6</h3><p>Turns and rhythm; design a project.</p></div></li>
-          <li class="card"><div class="card_inner"><h3 class="card__title">Weeks 7–8</h3><p>Rehearse and present at the showcase.</p></div></li>
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
+          <li class="card"><div class="card__inner"><h3 class="card__title">Weeks 1–2</h3><p>Balance, safety, and STEM foundations.</p></div></li>
+          <li class="card"><div class="card__inner"><h3 class="card__title">Weeks 3–4</h3><p>Glides and stops; forces and motion.</p></div></li>
+          <li class="card"><div class="card__inner"><h3 class="card__title">Weeks 5–6</h3><p>Turns and rhythm; design a project.</p></div></li>
+          <li class="card"><div class="card__inner"><h3 class="card__title">Weeks 7–8</h3><p>Rehearse and present at the showcase.</p></div></li>
         </ol>
       </div>
     </section>
@@ -111,7 +109,8 @@
           <h2>The showcase</h2>
           <p>Every student presents a STEM project and a skating performance matched to their level.</p>
         </div>
-         <img class="media__img"
+        <!-- Below the fold: lazy-loaded, same sizes as the hero -->
+        <img class="media__img"
           src="images/showcase-800.webp"
           srcset="images/showcase-480.webp 480w,
                   images/showcase-800.webp 800w,
@@ -123,7 +122,8 @@
       </div>
     </section>
 
-    <!-- VIDEO EMBED (practice example) -->
+    <!-- VIDEO EMBED (practice example). 16:9 box reserves space; title names
+         the video for screen readers; no autoplay; transcript + fallback link. -->
     <section class="section" aria-labelledby="video-heading">
       <div class="container flow">
         <h2 id="video-heading">See skating in action</h2>
@@ -136,7 +136,7 @@
             allow="encrypted-media; picture-in-picture"
             allowfullscreen></iframe>
         </div>
-         <details class="faq">
+        <details class="faq">
           <summary class="faq__question">Read the steps from this video</summary>
           <ol class="faq__answer">
             <li>Put on a helmet and practice on flat pavement.</li>
@@ -169,6 +169,7 @@
     <div class="container">
       <p><a href="mailto:hello@riseandroll.org">hello@riseandroll.org</a></p>
       <p>Serving after-school programs in [your service area].</p>
+      <p><small>Photos: Joao Viegas on Unsplash, Vanessa Loring on Pexels.</small></p>
       <p><small>&copy; 2026 Rise and Roll</small></p>
     </div>
   </footer>

@@ -1,5 +1,5 @@
 /* =========================================================
-   Rise and Roll — styles.css (Module 3: responsive layout system)
+   Rise and Roll — styles.css (Module 4: media and typography)
    One stylesheet, organized into cascade layers.
    Later layers win over earlier ones regardless of
    selector specificity, so no !important or ID battles.
@@ -85,22 +85,8 @@
     --text-xl: 2rem;       /* 32px */
     --text-xxl: clamp(2rem, 5vw, 2.75rem); /* h1: scales from 32px to 44px */
 
-<<<<<<< HEAD
-          /* Spacing (4/8px scale) */
-          --space-xs: 0.25rem; /* 4px */
-          --space-sm: 0.5rem; /* 8px */
-          --space-md: 1rem; /* 16px */
-          --space-lg: 1.5rem; /* 24px */
-          --space-xl: 2rem; /* 32px */
-          --space-xxl: 3rem; /* 48px */
-          
-        /* Fluid spacing: grows with the screen, within limits */
-        --gutter: clamp(1rem, 4vw, 2rem);
-        --section-space: clamp(3rem, 6vw, 4.5rem);
-=======
     --leading-tight: 1.2;  /* headings */
     --leading-body: 1.5;   /* paragraphs */
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
 
     /* Spacing (4/8px scale) */
     --space-xs: 0.25rem;   /* 4px */
@@ -124,21 +110,9 @@
     --focus-offset: 3px;
     --focus-color: #E8A33D;  /* amber: visible on white, gray, navy, and teal */
 
-<<<<<<< HEAD
-/* LAYOUT: */ 
-@layer layout {
-  /* Centered content column with side padding */
-  .container {
-    inline-size: 100%;
-    max-inline-size: var(--container-max);
-    margin-inline: auto;
-    padding-inline: var(--gutter);
-=======
     /* Layout */
-    --container-max: 70rem;  
-    --measure: 65ch;
-    /* max line length for text */
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
+    --container-max: 70rem;  /* 1120px */
+    --measure: 65ch;         /* max line length for text */
   }
 
   body {
@@ -224,21 +198,6 @@
     grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
   }
 
-<<<<<<< HEAD
-     .media__img {
-      order: -1;
-      inline-size: 100%;
-      block-size: auto;
-      aspect-ratio: 3 / 2;
-      object-fit: cover;
-      border-radius: var(--radius);
-     }
-
-      /* Medium: 600px+ */
-        /* Intrinsic grid: as many 15rem columns as fit; no media query needed */
-  .grid--3 {
-    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
-=======
   /* Timeline and hosting requirements: 4 items in a fixed order.
      I kept explicit column counts here instead of auto-fit because
      auto-fit would produce a 3 + 1 split at in-between widths,
@@ -268,9 +227,16 @@
     align-items: center;
   }
 
+  /* LAYOUT STABILITY: width/height attributes (1200x800) plus this
+     aspect-ratio reserve a 3:2 box before the file loads, so text below
+     never moves. object-fit keeps the photo from stretching if the box
+     and file ever differ. */
   .media__img {
     order: -1;
     inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
     border-radius: var(--radius);
   }
 
@@ -286,20 +252,9 @@
     .media__img {
       order: 0;  /* image moves to the right */
     }
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
   }
 
-  /* 37.5em: two columns need about 15rem each to keep descriptions readable */
-  @media (min-width: 37.5em) {
-    .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .media__img { order: 0; }  /* image moves to the right */
-  }
-
-  /* 64em: four columns need about 14rem each; explicit counts avoid a 3 + 1 split */
-  @media (min-width: 64em) {
-    .grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  }
+}
 
 
 /* ---------------------------------------------------------
@@ -313,10 +268,6 @@
   .site-header {
     border-block-end: var(--border-width) solid var(--color-border);
     background-color: var(--color-bg);
-<<<<<<< HEAD
-    border-block-end: var(--border-width) solid var(--color-border);
-=======
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
   }
 
   .site-header__inner {
@@ -347,12 +298,9 @@
   }
 
   @media (min-width: 37.5em) {
-<<<<<<< HEAD
-=======
     /* Content reason: the logo plus five links ("For Partners" and
        "Get Involved" are the longest) need about 35rem to sit in
        one row. Below that the links crowd, so they stack. */
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
     .site-header__inner {
       flex-direction: row;
       justify-content: space-between;
@@ -439,7 +387,7 @@
          the side-by-side layout, so they opt out of being containers. */
       container-type: normal;
       display: grid;
-      grid-row: span 2;
+      grid-row: span 3; /* icon, title, description */
       grid-template-rows: subgrid;
       row-gap: var(--space-sm);
     }
@@ -494,125 +442,16 @@
     padding-block-end: var(--space-md);
   }
 
-  /* Site footer */
-  .site-footer {
-    padding-block: var(--space-xl);
-    background-color: var(--color-text);
-    color: var(--color-on-dark);
-    font-size: var(--text-sm);
-  }
-
-  .site-footer a {
-    color: var(--color-on-dark);
-  }
-
-}
-
-
-<<<<<<< HEAD
-.button--secondary {
-  --button-bg: transparent;
-  --button-fg: var(--color-primary);
-  --button-border: var(--color-primary);
-}
-
-/* Card: */
-
-.card {
-  --card-padding: var(--space-lg);
-  container: card / inline-size;
-  padding: var(--card-padding);
-  background-color: var(--color-surface);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-}
-
-.card__title {
-  margin-block-end: var(--space-sm);
-}
-
- @container card (min-width: 28rem) {
-    .card__inner {
-      display: grid;
-      grid-template-columns: fit-content(10rem) minmax(0, 1fr);
-      gap: var(--space-xl);
-      align-items: baseline;
-    }
-  }
-
-    .card__inner .card__title {
-      margin-block-end: 0;
-    }
-  }
-
-    @supports (grid-template-rows: subgrid) {
-    .grid--3 > .card {
-      container-type: normal;
-      display: grid;
-      grid-row: span 3; /* icon, title, description */
-      grid-template-rows: subgrid;
-      row-gap: var(--space-sm);
-    }
- 
-    .grid--3 > .card .card__title {
-      margin-block-end: 0;
-    }
-  }
-
-
-/* CTA: */
-.cta-band {
-  background-color: var(--color-primary);
-  color: var(--color-on-dark);
-  text-align: center;
-  padding-block: var(--section-space);
-}
-
-.cta-band .cluster {
-  justify-content: center;
- }
-
-.cta-band__title {
-  margin-block-end: var(--space-lg);
- color: var(--color-on-dark);
- }
-
- .cta-band .button--secondary {
-  --button-fg: var(--color-on-dark);
-  --button-border: var(--color-on-dark);
- }
-
- /* FAQ accordion (For Partners) */
- 
- .faq {
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius);
-  background-color: var(--color-surface);
- }
-
- .faq + .faq {
-  margin-block-start: var(--space-sm);
- }
-
- .faq__question {
-  font-weight: 600;
-  padding: var(--space-md);
-  cursor: pointer;
- }
-
- .faq__answer {
-  padding-inline: var(--space-md);
-  padding-block-end: var(--space-md);
- }
-
- .card__icon {
+  /* Decorative SVG icons in "How it works": currentColor makes them
+     follow the brand navy and adapt in high-contrast modes */
+  .card__icon {
     inline-size: 2rem;
     block-size: 2rem;
     color: var(--color-primary);
   }
 
-   /* Video embed: reserves a 16:9 box so the page doesn't jump
-     when the YouTube player loads */
+  /* VIDEO EMBED: reserves a 16:9 box so the page doesn't jump when
+     the YouTube player loads */
   .media-frame {
     aspect-ratio: 16 / 9;
     inline-size: 100%;
@@ -629,25 +468,24 @@
     border: 0;
   }
 
- /* Site footer */
- .site-footer {
-  background-color: var(--color-text);
-  font-size: var(--text-sm);
-  color: var(--color-on-dark);
-  padding-block: var(--space-xl);
- }
+  /* Site footer */
+  .site-footer {
+    padding-block: var(--space-xl);
+    background-color: var(--color-text);
+    color: var(--color-on-dark);
+    font-size: var(--text-sm);
+  }
 
- .site-footer a {
-  color: var(--color-on-dark);
- }
+  .site-footer a {
+    color: var(--color-on-dark);
+  }
+
 }
 
-/* UTILITIES: */ 
-=======
+
 /* ---------------------------------------------------------
    UTILITIES: single-purpose helpers
    --------------------------------------------------------- */
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
 @layer utilities {
 
   /* Hidden visually, still read by screen readers */
@@ -665,12 +503,8 @@
     position: absolute;
     inset-inline-start: var(--space-md);
     inset-block-start: -100px;
-<<<<<<< HEAD
-    padding: var(--space-sm) var(--space-md);
-=======
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
     background-color: var(--color-primary);
     color: var(--color-on-dark);
     z-index: 10;
@@ -767,17 +601,12 @@
       transform: none !important;
     }
   }
-<<<<<<< HEAD
-  
-  /* High contrast: darker, thicker borders; nav links underlined */
-=======
 
   /* PREFERENCE 2: higher contrast. Light gray borders (#D9D9D9)
      nearly disappear for low-vision users, so card, FAQ, and
      header borders darken and grow, muted text becomes full
      strength, and nav links get underlines so they don't rely
      on weight alone. Changing tokens updates every component. */
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
   @media (prefers-contrast: more) {
     :root {
       --color-border: #595959;
@@ -789,10 +618,7 @@
       text-decoration: underline;
     }
   }
-<<<<<<< HEAD
-=======
 
->>>>>>> 43758ab21940983e082885deee436a5b36f16d95
 }
 
 
