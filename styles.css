@@ -19,8 +19,8 @@
   img,
   picture {
     display: block;
-    max-width: 100%;
-    height: auto;
+    max-inline-size: 100%;
+    block-size: auto;
   }
 
   ul[role="list"],
@@ -74,6 +74,10 @@
           --space-lg: 1.5rem; /* 24px */
           --space-xl: 2rem; /* 32px */
           --space-xxl: 3rem; /* 48px */
+          
+        /* Fluid spacing: grows with the screen, within limits */
+        --gutter: clamp(1rem, 4vw, 2rem);
+        --section-space: clamp(3rem, 6vw, 4.5rem);
 
         /* Shape */
         --radius: 8px;
@@ -96,14 +100,14 @@
 @layer layout {
   /* Centered content column with side padding */
   .container {
-    width: 100%;
-    max-width: var(--container-max);
+    inline-size: 100%;
+    max-inline-size: var(--container-max);
     margin-inline: auto;
-    padding-inline: var(--space-md);
+    padding-inline: var(--gutter);
   }
 
   .section {
-    padding-block: var(--space-xxl);
+    padding-block: var(--section-space);
   }
 
   .section--alt {
@@ -136,45 +140,37 @@
 
      .media__img {
       order: -1;
-      width: 100%;
+      inline-size: 100%;
+      block-size: auto;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
       border-radius: var(--radius);
      }
 
       /* Medium: 600px+ */
-      @media (min-width: 600px) {
-        .container {
-          padding-inline: var(--space-xl);
-        }
-      
-      .grid--3 { grid-template-columns: repeat(3, 1fr); }
-      .grid--4 { grid-template-columns: repeat(2, 1fr); }
- 
-     .media {
-      grid-template-columns: 1fr 1fr;
-    } 
-
-    .media__img {
-      order: 0;  /* image moves to the right */
-    }
-  }  
-
-  /* Wide: 1024px+ */
-  @media (min-width: 1024px) {
-    .section {
-      padding-block: calc(var(--space-xxl) * 1.5);
-    }
-
-    .grid--4 { grid-template-columns: repeat(4, 1fr); }
+        /* Intrinsic grid: as many 15rem columns as fit; no media query needed */
+  .grid--3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
   }
 
-}
+  /* 37.5em: two columns need about 15rem each to keep descriptions readable */
+  @media (min-width: 37.5em) {
+    .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .media { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .media__img { order: 0; }  /* image moves to the right */
+  }
+
+  /* 64em: four columns need about 14rem each; explicit counts avoid a 3 + 1 split */
+  @media (min-width: 64em) {
+    .grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
 
 /* COMPONENTS: */ 
 @layer components {
   /* Site header + navigation */
   .site-header {
     background-color: var(--color-bg);
-    border-bottom: var(--border-width) solid var(--color-border);
+    border-block-end: var(--border-width) solid var(--color-border);
   }
 
   .site-header__inner {
@@ -204,7 +200,7 @@
     font-weight: 600;
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: 37.5em) {
     .site-header__inner {
       flex-direction: row;
       justify-content: space-between;
@@ -245,7 +241,7 @@
 
 .card {
   --card-padding: var(--space-lg);
-
+  container: card / inline-size;
   padding: var(--card-padding);
   background-color: var(--color-surface);
   border: var(--border-width) solid var(--color-border);
@@ -253,15 +249,44 @@
 }
 
 .card__title {
-  margin-bottom: var(--space-sm);
+  margin-block-end: var(--space-sm);
 }
+
+ @container card (min-width: 28rem) {
+    .card__inner {
+      display: grid;
+      grid-template-columns: fit-content(10rem) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: baseline;
+    }
+  }
+
+    .card__inner .card__title {
+      margin-block-end: 0;
+    }
+  }
+
+    @supports (grid-template-rows: subgrid) {
+    .grid--3 > .card {
+      container-type: normal;
+      display: grid;
+      grid-row: span 3; /* icon, title, description */
+      grid-template-rows: subgrid;
+      row-gap: var(--space-sm);
+    }
+ 
+    .grid--3 > .card .card__title {
+      margin-block-end: 0;
+    }
+  }
+
 
 /* CTA: */
 .cta-band {
   background-color: var(--color-primary);
   color: var(--color-on-dark);
   text-align: center;
-  padding-block: var(--space-xxl);
+  padding-block: var(--section-space);
 }
 
 .cta-band .cluster {
@@ -269,7 +294,7 @@
  }
 
 .cta-band__title {
-  margin-bottom: var(--space-lg);
+  margin-block-end: var(--space-lg);
  color: var(--color-on-dark);
  }
 
@@ -287,7 +312,7 @@
  }
 
  .faq + .faq {
-  margin-top: var(--space-sm);
+  margin-block-start: var(--space-sm);
  }
 
  .faq__question {
@@ -297,8 +322,15 @@
  }
 
  .faq__answer {
-  padding: 0 var(--space-md) var(--space-md);
+  padding-inline: var(--space-md);
+  padding-block-end: var(--space-md);
  }
+
+ .card__icon {
+    inline-size: 2rem;
+    block-size: 2rem;
+    color: var(--color-primary);
+  }
 
    /* Video embed: reserves a 16:9 box so the page doesn't jump
      when the YouTube player loads */
@@ -336,8 +368,8 @@
   /* Hidden visually, still read by screen readers */
   .visually-hidden {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    inline-size: 1px;
+    block-size: 1px;
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
@@ -347,8 +379,8 @@
 /* Skip link: off-screen until focused (see states layer) */
  .skip-link {
     position: absolute;
-    left: var(--space-md);
-    top: -100px;
+    inset-inline-start: var(--space-md);
+    inset-block-start: -100px;
     padding: var(--space-sm) var(--space-md);
     background-color: var(--color-primary);
     color: var(--color-on-dark);
@@ -357,7 +389,7 @@
 
   /* Even vertical spacing between stacked children */
   .flow > * + * {
-    margin-top: var(--space-md);
+    margin-block-start: var(--space-md);
   }
  
   .text-center {
@@ -409,7 +441,7 @@
   }
  
   .skip-link:focus {
-    top: var(--space-md);
+    inset-block-start: var(--space-md);
   }
 
   /* Current page */
@@ -441,6 +473,19 @@
     *::after {
       transition: none !important;
       transform: none !important;
+    }
+  }
+  
+  /* High contrast: darker, thicker borders; nav links underlined */
+  @media (prefers-contrast: more) {
+    :root {
+      --color-border: #595959;
+      --color-text-muted: var(--color-text);
+      --border-width: 2px;
+    }
+
+    .nav__link {
+      text-decoration: underline;
     }
   }
 }
@@ -508,7 +553,7 @@
     }
  
     .grid > * + * {
-      margin-top: var(--space-sm);
+      margin-block-start: var(--space-sm);
     }
  
     .section {

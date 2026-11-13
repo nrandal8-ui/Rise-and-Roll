@@ -9,11 +9,10 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+</head><body>
 
   <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -46,24 +45,38 @@
             <a class="button button--secondary" href="get-involved.html">Volunteer</a>
           </div>
         </div>
-        <img class="media__img" src="images/hero.webp" alt="Instructor helping a student balance on roller skates" width="600" height="400">
+        <img class="media__img"
+          src="images/hero-800.webp"
+          srcset="images/hero-480.webp 480w,
+                  images/hero-800.webp 800w,
+                  images/hero-1200.webp 1200w"
+          sizes="(min-width: 37.5em) min(32rem, 50vw - 3rem), calc(100vw - 2rem)"
+          width="1200" height="800"
+          fetchpriority="high"
+          alt="An instructor on inline skates coaches a young girl in safety gear as she balances on skates between practice cones.">
       </div>
     </section>
 
     <!-- A · HOW IT WORKS (grid: 1 col narrow, 3 at medium+) -->
-    <section class="section section--alt" aria-labelledby="how-heading">
+     <section class="section section--alt" aria-labelledby="how-heading">
       <div class="container flow">
         <h2 id="how-heading">How it works</h2>
         <ol class="grid grid--3" role="list">
           <li class="card">
+            <!-- Decorative icon: the heading says the same thing, so it is hidden from screen readers -->
+            <svg class="card__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
             <h3 class="card__title">We come to you</h3>
             <p>We bring skates, gear, and STEM supplies to your site.</p>
           </li>
           <li class="card">
+            <!-- Decorative icon: the heading says the same thing, so it is hidden from screen readers -->
+            <svg class="card__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"><circle cx="7" cy="16" r="3"/><circle cx="17" cy="16" r="3"/><path d="M4 12h16M8 12V5h8v7"/></svg>
             <h3 class="card__title">Students learn two ways</h3>
             <p>Each session pairs a skating skill with a hands-on STEM lesson.</p>
           </li>
           <li class="card">
+            <!-- Decorative icon: the heading says the same thing, so it is hidden from screen readers -->
+            <svg class="card__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8-4.3-4.1 5.9-.9z"/></svg>
             <h3 class="card__title">They show what they learned</h3>
             <p>The cohort ends with a project and a skating performance.</p>
           </li>
@@ -76,10 +89,10 @@
       <div class="container flow">
         <h2 id="cohort-heading">A sample cohort</h2>
         <ol class="grid grid--4" role="list">
-          <li class="card"><h3 class="card__title">Weeks 1–2</h3><p>Balance, safety, and STEM foundations.</p></li>
-          <li class="card"><h3 class="card__title">Weeks 3–4</h3><p>Glides and stops; forces and motion.</p></li>
-          <li class="card"><h3 class="card__title">Weeks 5–6</h3><p>Turns and rhythm; design a project.</p></li>
-          <li class="card"><h3 class="card__title">Weeks 7–8</h3><p>Rehearse and present at the showcase.</p></li>
+          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 1–2</h3><p>Balance, safety, and STEM foundations.</p></li>
+          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 3–4</h3><p>Glides and stops; forces and motion.</p></li>
+          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 5–6</h3><p>Turns and rhythm; design a project.</p></li>
+          <li class="card"><div class="card__inner"></div><h3 class="card__title">Weeks 7–8</h3><p>Rehearse and present at the showcase.</p></li>
         </ol>
       </div>
     </section>
@@ -91,7 +104,15 @@
           <h2>The showcase</h2>
           <p>Every student presents a STEM project and a skating performance matched to their level.</p>
         </div>
-        <img class="media__img" src="images/showcase.webp" alt="Three students stand against a painted wall, each holding a robot or controller they built." width="600" height="400" loading="lazy">
+         <img class="media__img"
+          src="images/showcase-800.webp"
+          srcset="images/showcase-480.webp 480w,
+                  images/showcase-800.webp 800w,
+                  images/showcase-1200.webp 1200w"
+          sizes="(min-width: 37.5em) min(32rem, 50vw - 3rem), calc(100vw - 2rem)"
+          width="1200" height="800"
+          loading="lazy"
+          alt="Three students stand against a painted wall, each holding a robot or controller they built.">
       </div>
     </section>
 
@@ -108,7 +129,18 @@
             allow="encrypted-media; picture-in-picture"
             allowfullscreen></iframe>
         </div>
-        <p><a href="https://www.youtube.com/watch?v=yPIxa7VmpZo">Watch on YouTube</a> (captions and transcript available there)</p>
+         <details class="faq">
+          <summary class="faq__question">Read the steps from this video</summary>
+          <ol class="faq__answer">
+            <li>Put on a helmet and practice on flat pavement.</li>
+            <li>Stand with your knees bent under your shoulders and your back straight, then take small steps to find your balance.</li>
+            <li>Push off one foot while stepping the other forward, shift your weight onto the front foot, and lift the back foot to glide.</li>
+            <li>Keep your feet parallel and lower your body slightly for more control.</li>
+            <li>To stop, slide one foot forward and press the toe stop against the ground.</li>
+            <li>Keep practicing; falling is part of learning.</li>
+          </ol>
+        </details>
+        <p><a href="https://www.youtube.com/watch?v=yPIxa7VmpZo">Watch on YouTube</a> (captions available there)</p>
       </div>
     </section>
 
