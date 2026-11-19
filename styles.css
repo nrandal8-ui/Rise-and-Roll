@@ -108,7 +108,8 @@
     /* Focus */
     --focus-width: 3px;
     --focus-offset: 3px;
-    --focus-color: #E8A33D;  /* amber: visible on white, gray, navy, and teal */
+    --focus-color: #3C4A84;  
+    --focus-color-on-dark: #E8A33D;
 
     /* Layout */
     --container-max: 70rem;  /* 1120px */
@@ -404,6 +405,7 @@
     background-color: var(--color-primary);
     color: var(--color-on-dark);
     text-align: center;
+    --focus-color: var(--focus-color-on-dark);
   }
 
   .cta-band .cluster {
@@ -474,6 +476,7 @@
     background-color: var(--color-text);
     color: var(--color-on-dark);
     font-size: var(--text-sm);
+    --focus-color: var(--focus-color-on-dark);
   }
 
   .site-footer a {
